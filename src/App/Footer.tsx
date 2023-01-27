@@ -45,11 +45,11 @@ const Footer = () => {
 
         <a
           className="block mb-4 hover:text-orange-l3"
-          href="https://storageapi.fleek.co/57b943eb-ed70-478a-8899-c7859400f77b-bucket/documents/ap-litepaper-v3.pdf"
+          href="https://angelprotocol.io/docs/litepaper-introduction/"
           target="_blank"
           rel="noreferrer"
         >
-          DOWNLOAD LITEPAPER
+          LITEPAPER
         </a>
         <p className="text-xs text-white dark:text-gray">
           COPYRIGHT 2022 ANGEL PROTOCOL. ALL RIGHTS RESERVED.

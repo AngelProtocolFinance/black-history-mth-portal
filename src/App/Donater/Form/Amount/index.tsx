@@ -1,4 +1,6 @@
 import { ErrorMessage } from "@hookform/error-message";
+import KadoModal from "components/KadoModal";
+import { useModalContext } from "contexts/ModalContext";
 import { useFormContext } from "react-hook-form";
 import { FormValues as FV } from "../../types";
 
@@ -10,16 +12,25 @@ export default function Amount() {
     formState: { errors, isSubmitting },
   } = useFormContext<FV>();
 
+  const { showModal } = useModalContext();
+
   return (
     <div className="grid mt-4 mb-8 relative">
-      <div className="flex items-baseline justify-between mb-1">
+      <div className="flex items-center mb-1">
         <label
           htmlFor="amount"
-          className="text-lg font-extrabold font-heading uppercase"
+          className="text-lg font-extrabold font-heading uppercase mr-auto"
         >
           Amount
         </label>
         <Balance />
+        <button
+          type="button"
+          onClick={() => showModal(KadoModal, {})}
+          className="text-xs text-orange uppercase text-heading hover:text-orange-l2 ml-2"
+        >
+          buy crypto
+        </button>
       </div>
 
       <input

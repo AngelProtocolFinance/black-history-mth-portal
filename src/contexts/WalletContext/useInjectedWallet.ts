@@ -3,8 +3,14 @@ import { Wallet, WalletMeta, WalletState } from "./types";
 import { getProvider } from "helpers/getProvider";
 import { EIPMethods } from "constants/ethereum";
 import { retrieveUserAction, saveUserAction } from "./helpers/prefActions";
-import { AccountChangeHandler, ChainChangeHandler, Dwindow } from "types";
+import {
+  AccountChangeHandler,
+  ChainChangeHandler,
+  Dwindow,
+  Web3Provider,
+} from "types";
 import { toast } from "react-toastify";
+import { isXdefiPrioritized } from "./helpers/assertions";
 
 export default function useInjectedWallet(
   meta: WalletMeta & { installUrl: string }
@@ -71,11 +77,11 @@ export default function useInjectedWallet(
       /** isMobile check not needed, just hide this wallet on mobile */
 
       /** xdefi checks */
-      const xfiEth = (window as Dwindow).xfi?.ethereum;
-      if (id === "xdefi-evm" && !xfiEth?.isMetaMask) {
+
+      if (id === "xdefi-evm" && !isXdefiPrioritized()) {
         if (!isNew) return;
         return toast.warn("Kindly prioritize Xdefi and reload the page");
-      } else if (id !== "xdefi-evm" && xfiEth?.isMetaMask) {
+      } else if (id !== "xdefi-evm" && isXdefiPrioritized()) {
         if (!isNew) return;
         return toast.warn(
           "Kindly remove priority to Xdefi and reload the page"
@@ -96,11 +102,14 @@ export default function useInjectedWallet(
       provider.on("chainChanged", handleChainChange);
 
       setState({
+        type: "evm",
         status: "connected",
         address: accounts[0],
         chainId: `${parseInt(hexChainId, 16)}`,
         disconnect,
+        signer: new Web3Provider(provider).getSigner(),
       });
+
       saveUserAction(actionKey, "connect");
     } catch (err) {
       if (isNew) {

@@ -1,25 +1,24 @@
-import {
-  TransactionRequest,
-  TransactionResponse,
-} from "@ethersproject/abstract-provider";
-import { Coin, MsgExecuteContract, MsgSend } from "@terra-money/terra.js";
-import {
-  ConnectedWallet as TConnectedWallet,
-  useConnectedWallet as useTerraWallet,
-} from "@terra-money/wallet-provider";
-import { chains } from "constants/chains";
-import { ApesAddresses } from "constants/constants";
+import { ap_wallets } from "constants/constants";
 import { ethers } from "ethers";
 import { scaleToStr } from "helpers/decimal";
-import { getProvider } from "helpers/getProvider";
 import { useFormContext, SubmitHandler } from "react-hook-form";
 import ERC20Abi from "abi/ERC20.json";
 import { FormValues as FV } from "../types";
 import { useModalContext } from "contexts/ModalContext";
-import TxModal from "../TxModal";
-import { useConnectedWallet } from "contexts/WalletGuard";
+import Prompt from "components/Prompt";
+import {
+  TerraCoin,
+  MsgExecuteContract,
+  MsgSend,
+  MsgExecuteContractEncodeObject,
+  MsgSendEncodeObject,
+  TransactionRequest,
+  TransactionResponse,
+} from "types";
+
 import { ConnectedWallet } from "contexts/WalletContext";
 import { useDonationLogMutation } from "services/apes";
+import { useConnectedWallet } from "contexts/WalletGuard";
 
 export default function useDonate() {
   const {
@@ -27,22 +26,27 @@ export default function useDonate() {
     handleSubmit,
     formState: { isSubmitting, isValidating },
   } = useFormContext<FV>();
-  const terraWallet = useTerraWallet();
-  const wallet = useConnectedWallet();
+
   const { showModal } = useModalContext();
   const [saveDonation] = useDonationLogMutation();
+  const wallet = useConnectedWallet();
 
   const submit: SubmitHandler<FV> = async ({ coin, amount }) => {
-    const result = await sendTx(
-      coin,
-      amount,
-      wallet,
-      terraWallet! /** should be defined at this point */
+    showModal(
+      Prompt,
+      { message: "Sending transaction" },
+      { isDismissible: false }
     );
+
+    const result = await sendTx(coin, amount, wallet);
     if (result) {
       const { hash } = result;
 
-      showModal(TxModal, { message: "Saving donation details.." });
+      showModal(
+        Prompt,
+        { message: "Saving donation details.." },
+        { isDismissible: false }
+      );
 
       const res = await saveDonation({
         transactionId: hash,
@@ -53,18 +57,19 @@ export default function useDonate() {
       });
 
       if ("error" in res)
-        return showModal(TxModal, {
+        return showModal(Prompt, {
           tx: { hash, chainId: wallet.chainId },
           message:
             "Transaction has been submitted but was not saved for receipt purposes. Kindly contact support@angelprotocol.io",
         });
 
-      showModal(TxModal, {
+      showModal(Prompt, {
         message: "Thank you for your donation!",
         tx: { hash, chainId: wallet.chainId },
+        shareable: true,
       });
     } else {
-      showModal(TxModal, { message: "Transaction failed" });
+      showModal(Prompt, { message: "Transaction failed" });
     }
     /** reset ammount */
     resetField("amount");
@@ -76,51 +81,84 @@ export default function useDonate() {
 async function sendTx(
   coin: FV["coin"],
   _amount: string,
-  wallet: ConnectedWallet,
-  terraWallet: TConnectedWallet /** for posting terra tx TODO: tx.post should be part of generic wallet */
+  wallet: ConnectedWallet
 ): Promise<{ hash: string } | null> {
-  const chain = chains[wallet.chainId];
   try {
-    if (chain.type === "terra") {
+    if (wallet.type === "terra") {
       let msg: MsgSend | MsgExecuteContract;
-      const uamount = scaleToStr(_amount);
-      const recipient = ApesAddresses.terra;
+      const scaledAmount = scaleToStr(_amount, coin.decimals);
+      const recipient = ap_wallets.terra;
       if (coin.type === "terra-native" || coin.type === "ibc") {
         msg = new MsgSend(wallet.address, recipient, [
-          new Coin(coin.token_id, uamount),
+          new TerraCoin(coin.token_id, scaledAmount),
         ]);
         /** cw20 */
       } else {
         msg = new MsgExecuteContract(wallet.address, coin.token_id, {
           transfer: {
-            amount: uamount,
+            amount: scaledAmount,
             recipient: recipient,
           },
         });
       }
-      const { success, result } = await terraWallet.post({ msgs: [msg] });
+      const { success, result } = await wallet.post({ msgs: [msg] });
       return success ? { hash: result.txhash } : null;
+    } else if (wallet.type === "cosmos") {
+      const encoder = new TextEncoder();
+      const scaledAmount = scaleToStr(_amount, coin.decimals);
+      const recipient = ap_wallets.junoDeposit;
+      let msg: MsgSendEncodeObject | MsgExecuteContractEncodeObject =
+        coin.type == "ibc" || coin.type === "juno-native"
+          ? {
+              typeUrl: "/cosmos.bank.v1beta1.MsgSend",
+              value: {
+                fromAddress: wallet.address,
+                toAddress: recipient,
+                amount: [
+                  {
+                    denom: coin.token_id,
+                    amount: scaledAmount,
+                  },
+                ],
+              },
+            }
+          : /** cw20 */
+            {
+              typeUrl: "/cosmwasm.wasm.v1.MsgExecuteContract",
+              value: {
+                contract: coin.token_id,
+                sender: wallet.address,
+                msg: encoder.encode(
+                  JSON.stringify({
+                    transfer: {
+                      amount: scaledAmount,
+                      recipient: recipient,
+                    },
+                  })
+                ),
+              },
+            };
+
+      const response = await wallet.post(wallet.address, [msg], "auto");
+      return !response.code ? { hash: response.transactionHash } : null;
       /** evm tx */
     } else {
-      const wei_amount = ethers.utils.parseEther(`${_amount}`);
-      const recipient = ApesAddresses.eth;
-      const provider = new ethers.providers.Web3Provider(
-        getProvider(wallet.id) as any
-      );
+      const scaledAmount = ethers.utils.parseUnits(`${_amount}`, coin.decimals);
+      const recipient = ap_wallets.eth;
+
       const tx: TransactionRequest = {
         from: wallet.address,
         to: recipient,
-        value: wei_amount,
+        value: scaledAmount,
       };
-      const signer = provider.getSigner();
       let res: TransactionResponse;
       if (coin.type === "evm-native") {
-        res = await signer.sendTransaction(tx);
+        res = await wallet.signer.sendTransaction(tx);
       } else {
         const ER20Contract: any = new ethers.Contract(
           coin.token_id,
           ERC20Abi,
-          signer
+          wallet.signer
         );
         res = await ER20Contract.transfer(tx.to, tx.value);
       }

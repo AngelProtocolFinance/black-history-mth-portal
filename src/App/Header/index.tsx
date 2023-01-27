@@ -2,6 +2,7 @@ import angelLogo from "assets/icons/AP-Beta-logo.svg";
 import Wallet from "./Wallet";
 import { useEffect, useRef, useState } from "react";
 import ThemeToggle from "./ThemeToggle";
+import ExtLink from "components/ExtLink";
 
 export default function Header({ classes = "" }) {
   const isScrolledRef = useRef<boolean>(false);
@@ -28,14 +29,9 @@ export default function Header({ classes = "" }) {
       }`}
     >
       <div className="flex items-center container-padded">
-        <a
-          className="mr-auto"
-          href="https://www.angelprotocol.io/"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
+        <ExtLink className="mr-auto" href="https://www.angelprotocol.io/">
           <img src={angelLogo} className="w-32 object-contain" />
-        </a>
+        </ExtLink>
         <Wallet />
         <ThemeToggle />
       </div>

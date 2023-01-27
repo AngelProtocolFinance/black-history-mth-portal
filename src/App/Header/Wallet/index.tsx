@@ -1,5 +1,5 @@
 import { Popover } from "@headlessui/react";
-import { sliced } from "helpers/sliceAddress";
+import { maskAddress } from "helpers/maskAddress";
 import { Coin } from "types";
 import { ConnectedWallet as TConnectedWallet } from "contexts/WalletContext";
 import { chains } from "constants/chains";
@@ -9,6 +9,8 @@ import withConnectedWallet, { useConnectedWallet } from "contexts/WalletGuard";
 import { Opener } from "./wallet-selection/Opener";
 import { useTokensQuery } from "services/apes";
 import { useBalanceQuery } from "services/web3";
+import { useModalContext } from "contexts/ModalContext";
+import KadoModal from "components/KadoModal";
 
 const Wallet = () => {
   const wallet = useConnectedWallet();
@@ -23,9 +25,7 @@ const Wallet = () => {
               alt=""
               className="h-6 w-6 bg-white rounded-full p-1"
             />
-            <span className="max-sm:hidden">
-              {sliced(wallet.address, 5, -3)}
-            </span>
+            <span className="max-sm:hidden">{maskAddress(wallet.address)}</span>
             <DrawerIcon isOpen={open} size={22} />
           </>
         )}
@@ -36,7 +36,7 @@ const Wallet = () => {
           {chain.name}
         </p>
         <p className="sm:hidden mb-2 mt-1 text-sm text-right">
-          {sliced(wallet.address, 5, -4)}
+          {maskAddress(wallet.address)}
         </p>
         <p className="text-sm uppercase border-b border-prim mb-2 pb-1">
           Balances
@@ -55,14 +55,24 @@ const Wallet = () => {
 };
 
 function Balances(wallet: TConnectedWallet) {
+  const { showModal } = useModalContext();
   const { data: coins = [], isLoading } = useTokensQuery(wallet.chainId);
-  if (isLoading) return <p className="text-sm mb-4">Fetching tokens...</p>;
+  if (isLoading) return <p className="text-sm">Fetching tokens...</p>;
   return (
-    <div className="grid gap-1 mb-4 empty:after:content-['wallet_is_empty'] after:text-xs">
-      {coins.map((coin) => (
-        <Token key={coin.token_id} wallet={wallet} coin={coin} />
-      ))}
-    </div>
+    <>
+      <div className="grid gap-1 peer empty:after:content-['wallet_is_empty'] after:text-xs">
+        {coins.map((coin) => (
+          <Token key={coin.token_id} wallet={wallet} coin={coin} />
+        ))}
+      </div>
+      <button
+        type="button"
+        onClick={() => showModal(KadoModal, {})}
+        className="hidden peer-empty:block text-xs text-orange uppercase text-heading mb-4 hover:text-orange-l2"
+      >
+        buy crypto
+      </button>
+    </>
   );
 }
 

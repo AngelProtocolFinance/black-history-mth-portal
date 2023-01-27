@@ -134,14 +134,17 @@ export function useConnectedWallet() {
 }
 
 export const PLACEHOLDER_WALLET: ConnectedWallet = {
-  id: "binance-wallet",
-  type: "",
+  id: "keplr",
+  type: "cosmos",
   name: "",
   logo: "",
   address: "",
   chainId: "",
   status: "connected",
   disconnect: () => {
+    throw new Error("placeholder wallet shoudn't be used");
+  },
+  post: () => {
     throw new Error("placeholder wallet shoudn't be used");
   },
 };

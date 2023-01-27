@@ -1,10 +1,17 @@
+import {
+  JsonRpcSigner,
+  TerraConnectedWallet,
+  SigningStargateClient,
+} from "types";
+
 export type ProviderId =
   | "binance-wallet"
   | "metamask"
   | "xdefi-wallet" //xdefi terra provider
   | "xdefi-evm" //xdefi evm provider
   | "station"
-  | "walletconnect";
+  | "walletconnect"
+  | "keplr";
 
 type Connected = {
   status: "connected";
@@ -12,19 +19,28 @@ type Connected = {
   chainId: string;
   disconnect(): void;
 };
+
+type Terra = { type: "terra"; post: TerraConnectedWallet["post"] };
+type Cosmos = {
+  type: "cosmos";
+  post: SigningStargateClient["signAndBroadcast"];
+};
+type EVM = { type: "evm"; signer: JsonRpcSigner };
+
+export type ConnectedToChainType = Connected & (Terra | Cosmos | EVM);
+
 type Disconnected = { status: "disconnected"; connect(args?: any): void };
 type Loading = { status: "loading" };
 
-export type WalletState = Connected | Disconnected | Loading;
+export type WalletState = ConnectedToChainType | Disconnected | Loading;
 export type WalletMeta = {
   logo: string;
-  type: string;
   id: ProviderId;
   name: string;
 };
 export type Wallet = WalletMeta & WalletState;
 
-export type ConnectedWallet = WalletMeta & Connected;
+export type ConnectedWallet = WalletMeta & ConnectedToChainType;
 export type DisconnectedWallet = WalletMeta & Disconnected;
 
 export type ContextState =

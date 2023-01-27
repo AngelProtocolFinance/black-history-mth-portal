@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "build": "react-app-rewired build",
-    "start": "GENERATE_SOURCEMAP=false PORT=4200 react-app-rewired start",
+    "start": "GENERATE_SOURCEMAP=false PORT=3000 react-app-rewired start",
     "test": "react-app-rewired test --colors",
     "coverage": "react-app-rewired test --coverage",
     "precommit": "lint-staged",
@@ -36,6 +36,8 @@
     ]
   },
   "dependencies": {
+    "@cosmjs/cosmwasm-stargate": "^0.29.5",
+    "@cosmjs/stargate": "^0.29.5",
     "@headlessui/react": "^1.7.5",
     "@hookform/error-message": "^2.0.1",
     "@hookform/resolvers": "^2.9.10",
@@ -58,6 +60,7 @@
     "@babel/core": "^7.20.5",
     "@babel/plugin-syntax-flow": "^7.18.6",
     "@babel/plugin-transform-react-jsx": "^7.19.0",
+    "@keplr-wallet/types": "^0.11.24",
     "@testing-library/jest-dom": "^5.15.0",
     "@types/jest": "^27.0.2",
     "@types/jsonwebtoken": "^8.5.8",
@@ -68,6 +71,7 @@
     "cross-env": "^7.0.3",
     "crypto-browserify": "^3.12.0",
     "lint-staged": "^11.2.6",
+    "path-browserify": "^1.0.1",
     "postcss": "^8.4.14",
     "prettier": "^2.7.1",
     "process": "^0.11.10",

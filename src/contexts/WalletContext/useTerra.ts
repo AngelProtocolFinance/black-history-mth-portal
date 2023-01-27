@@ -1,12 +1,12 @@
-import {
-  ConnectType,
-  Installation,
-  Connection as TerraConnection,
-  WalletStatus,
-  useWallet,
-} from "@terra-money/wallet-provider";
+import { useWallet } from "@terra-money/wallet-provider";
 import { toast } from "react-toastify";
-import { Dwindow } from "types";
+import {
+  TerraInstallation,
+  TerraConnection,
+  ConnectType,
+  WalletStatus,
+} from "types";
+import { isXdefiPrioritized } from "./helpers/assertions";
 import { ProviderId, Wallet } from "./types";
 
 const XDEFI_ID = "xdefi-wallet";
@@ -20,9 +20,10 @@ export default function useTerra2(): Wallet[] {
     status,
     connect,
     disconnect,
+    post,
   } = useWallet();
 
-  function toWallet(c: Installation | TerraConnection): Wallet {
+  function toWallet(c: TerraInstallation | TerraConnection): Wallet {
     return {
       id: (c?.identifier as ProviderId) || c.type.toLowerCase(),
       type: "terra",
@@ -36,6 +37,7 @@ export default function useTerra2(): Wallet[] {
             disconnect,
             address: wallets[0].terraAddress,
             chainId: network.chainID,
+            post,
           }
         : {
             status: "disconnected",
@@ -45,8 +47,8 @@ export default function useTerra2(): Wallet[] {
                 window.open(c.url, "_blank", "noopener noreferrer");
               } else {
                 /** don't connect terra if xdefi is prioritized*/
-                const xfiEth = (window as Dwindow).xfi?.ethereum;
-                if (c.identifier !== XDEFI_ID && xfiEth?.isMetaMask) {
+
+                if (c.identifier !== XDEFI_ID && isXdefiPrioritized()) {
                   return toast.warning(
                     "Kindly remove priority to Xdefi and reload the page"
                   );
@@ -64,7 +66,7 @@ export default function useTerra2(): Wallet[] {
     .concat(availableInstallations.filter(_filter).map((i) => toWallet(i)));
 }
 
-function _filter<T extends TerraConnection | Installation>(conn: T) {
+function _filter<T extends TerraConnection | TerraInstallation>(conn: T) {
   const id = conn.identifier;
   return (
     id === XDEFI_ID ||

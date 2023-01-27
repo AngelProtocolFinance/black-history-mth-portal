@@ -1,4 +1,4 @@
-import { WalletControllerChainOptions } from "@terra-money/wallet-provider";
+import { WalletControllerChainOptions } from "types";
 
 /**
  * from: https://assets.terra.money/chains.json

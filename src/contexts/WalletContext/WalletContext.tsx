@@ -6,12 +6,12 @@ import xdefiIcon from "assets/icons/wallets/xdefi.jpg";
 
 import useInjectedWallet from "./useInjectedWallet";
 import useTerra from "./useTerra";
+import useKeplr from "./useKeplr";
 
 export default function WalletContext(props: PropsWithChildren<{}>) {
   const metamask = useInjectedWallet({
     id: "metamask",
     logo: metamaskIcon,
-    type: "evm",
     name: "Metamask",
     installUrl:
       "https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn",
@@ -19,7 +19,6 @@ export default function WalletContext(props: PropsWithChildren<{}>) {
   const binance = useInjectedWallet({
     id: "binance-wallet",
     logo: binanceWalletIcon,
-    type: "evm",
     name: "Binance wallet",
     installUrl:
       "https://chrome.google.com/webstore/detail/binance-wallet/fhbohimaelbohpjbbldcngcnapndodjp",
@@ -27,14 +26,14 @@ export default function WalletContext(props: PropsWithChildren<{}>) {
   const xdefiEvm = useInjectedWallet({
     id: "xdefi-evm",
     logo: xdefiIcon,
-    type: "evm",
     name: "Xdefi ethereum",
     installUrl:
       "https://chrome.google.com/webstore/detail/xdefi-wallet/hmeobnfnfcmdkdcmlblgagmfpfboieaf?hl=en",
   });
   const terraWallets = useTerra();
+  const keplr = useKeplr();
 
-  const wallets = [metamask, binance, xdefiEvm, ...terraWallets];
+  const wallets = [keplr, metamask, binance, xdefiEvm, ...terraWallets];
 
   const connectedWallet = wallets.find((w) => w.status === "connected") as
     | ConnectedWallet

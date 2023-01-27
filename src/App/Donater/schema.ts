@@ -1,8 +1,7 @@
 import * as Yup from "yup";
-import { Coin, SchemaShape } from "types";
+import { Coin, SchemaShape, Dec } from "types";
 import { FormValues as FV } from "./types";
 import { ConnectedWallet } from "contexts/WalletContext";
-import { Dec } from "@terra-money/terra.js";
 import { TBalanceFetcher } from "services/web3";
 
 const coinKey: keyof FV = "coin";
