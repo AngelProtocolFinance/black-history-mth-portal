@@ -56,7 +56,7 @@ export default function DonateHeader({ classes = "" }) {
           the financial certainty they need to deliver on their mission.
         </p>
         <p className="leading-relaxed my-4">
-          Donate: $2,800, $280, $28. A dollar, 10x, or 100x, a dollar a day for the month of February.
+          <strong>Donate: $2,800, $280, $28. A dollar, 10x, or 100x, a dollar a day for the month of February.</strong>
         </p>
       </div>
     </section>

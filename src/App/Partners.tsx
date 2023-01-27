@@ -53,7 +53,7 @@ function PartnerCard(props: { id: number; name: string; logo: string; blurb: str
         <img src={props.logo} style={{ maxHeight: "200px"}} className={"inset-x-0 bottom-0"}/>
         <div className={"pt-4"}>
           <ExtLink
-            className={"text-xl"}
+            className={"text-2xl"}
             href={`https://app.angelprotocol.io/profile/${props.id}`}
           >{props.name}
           </ExtLink>
