@@ -30,7 +30,7 @@ const Partners = ({ classes = "" }) => {
           blurb="Breaks down barriers between youth and justice issues that affect their lives and communities using Hip hop as a vehicle. We educate, employ, and empower historically marginalized communities and inspire the next generation of leaders advocating for change through this work!"
         />
         <PartnerCard
-          id={111}
+          id={54}
           logo={partner2}
           name="Brothers Liberating Our Communities"
           blurb="A professional network of Black Male Educational leaders working to uplift our communities through racial equity centered education work."
