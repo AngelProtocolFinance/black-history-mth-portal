@@ -7,7 +7,7 @@ export default function DonateHeader({ classes = "" }) {
         Reflecting on the past, building for the future
       </h2>
       <div className="leading-relaxed max-w-7xl">
-        <p className="leading-relaxed my-4">
+        <p className="my-8">
           Racial inequities in America are the result of structural racism
           embedded in our historical, political, cultural, social, and economic
           systems and institutions
@@ -29,7 +29,7 @@ export default function DonateHeader({ classes = "" }) {
           </ExtLink>
           .
         </p>
-        <p className="leading-relaxed my-4">
+        <p className="my-8">
           Funding Black-led nonprofits is critical to bridging this immense gap
           as Black led nonprofits statistically put more resources into
           advancing racial justice than their white-led counterparts
@@ -45,7 +45,7 @@ export default function DonateHeader({ classes = "" }) {
           Unrestricted funds are critical to nonprofit impact as it allows
           agency in how programming is designed and funds are allocated.
         </p>
-        <p className="leading-relaxed my-4">
+        <p className="my-8">
           Despite this, Black led nonprofits have demonstrated resolve,
           resiliency, and greater efficacy dollar per dollar in their
           programming. Endowing a social change nonprofit is one of
@@ -55,7 +55,7 @@ export default function DonateHeader({ classes = "" }) {
           communities they serve, we can give the best equipped organizations
           the financial certainty they need to deliver on their mission.
         </p>
-        <p className="leading-relaxed my-4">
+        <p className="my-8">
           <strong>Donate: $2,800, $280, $28. A dollar, 10x, or 100x, a dollar a day for the month of February.</strong>
         </p>
       </div>
