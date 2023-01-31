@@ -46,16 +46,26 @@ const Partners = ({ classes = "" }) => {
   );
 };
 
-function PartnerCard(props: { id: number; name: string; logo: string; blurb: string; }) {
+function PartnerCard(props: {
+  id: number;
+  name: string;
+  logo: string;
+  blurb: string;
+}) {
   return (
     <div className="text-center grid place-items-center rounded-md border p-4 dark:bg-blue-d6 border-prim h-[530px] md:h-[400px]">
       <>
-        <img src={props.logo} style={{ maxHeight: "200px"}} className={"inset-x-0 bottom-0"}/>
+        <img
+          src={props.logo}
+          style={{ maxHeight: "200px" }}
+          className={"inset-x-0 bottom-0"}
+        />
         <div className={"pt-4"}>
           <ExtLink
             className={"text-2xl"}
             href={`https://app.angelprotocol.io/profile/${props.id}`}
-          >{props.name}
+          >
+            {props.name}
           </ExtLink>
           <p className={"text-sm lg:text-md"}>{props.blurb}</p>
         </div>
