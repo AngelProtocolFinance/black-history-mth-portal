@@ -2,11 +2,30 @@ import ExtLink from "components/ExtLink";
 
 export default function DonateHeader({ classes = "" }) {
   return (
-    <section className={`sm:container-unpadded container-padded ${classes}`}>
-      <h2 className="text-3xl sm:text-4xl font-bold mb-4">
-        Reflecting on the past, building for the future
-      </h2>
-      <div className="leading-relaxed max-w-7xl">
+    <section className={`container-padded grid grid-cols-1 ${classes}`}>
+      <div className="text-center grid place-items-center rounded-md border p-4 dark:bg-blue-d6 border-prim lg:my-8">
+        <h1 className="text-3xl sm:text-4xl sm:leading-relaxed mt-10 font-extrabold uppercase text-center">
+          Together WE CAN CREATE A MORE JUST AND EQUITABLE FUTURE
+        </h1>
+        <div className="sm:text-lg font-heading text-center mt-4 pb-10">
+          <p className="leading-relaxed pb-10">
+            Racial bias in philanthropic giving has resulted in an underfunding
+            of Black communities by $2 billion. Despite this, Black led
+            nonprofits and businesses outperform when equipped with the
+            resources needed.
+          </p>
+          <a
+            className="rounded-md btn-orange uppercase px-4 py-2 mb-16 mt-6 font-bold text-md"
+            href="#donate_now"
+          >
+            Donate Now
+          </a>
+        </div>
+      </div>
+      <div className="leading-relaxed max-w-7xl mt-10">
+        <h2 className="text-3xl sm:text-4xl font-bold">
+          Reflecting on the past, building for the future
+        </h2>
         <p className="my-8">
           Racial inequities in America are the result of structural racism
           embedded in our historical, political, cultural, social, and economic
@@ -55,8 +74,11 @@ export default function DonateHeader({ classes = "" }) {
           communities they serve, we can give the best equipped organizations
           the financial certainty they need to deliver on their mission.
         </p>
-        <p className="my-8">
-          <strong>Donate: $2,800, $280, $28. A dollar, 10x, or 100x, a dollar a day for the month of February.</strong>
+        <p className="mt-8">
+          <strong>
+            Donate: $2,800, $280, $28. A dollar, 10x, or 100x, a dollar a day
+            for the month of February.
+          </strong>
         </p>
       </div>
     </section>
