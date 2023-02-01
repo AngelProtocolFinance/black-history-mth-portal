@@ -1,5 +1,5 @@
 import { app } from "constants/config";
-import heroBanner from "assets/images/banner.png";
+import heroBanner from "assets/images/banner.jpg";
 
 export default function Hero() {
   return (

@@ -9,7 +9,7 @@ import ModalContext from "contexts/ModalContext";
 import Donater from "./Donater";
 import DonateFooter from "./DonateFooter";
 import About from "./About";
-import donateImage from "assets/images/hero.png";
+import donateImage from "assets/images/hero.jpg";
 
 export default function App() {
   return (
