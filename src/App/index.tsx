@@ -21,7 +21,7 @@ export default function App() {
           <DonateHeader classes="my-8" />
           <div className="grid lg:grid-cols-[3fr_4fr]  container-padded gap-4 my-4">
             <img
-              className="h-60 lg:h-full w-full object-cover rounded"
+              className="h-60 lg:h-full w-full bg-cover rounded"
               src={donateImage}
             />
             <Donater />
